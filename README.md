@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Phala-Network/ai-agent-template-redpill">
-    <h1>AI Agent Contract Template with OpenAI</h1>
+    <h1>AI Agent Contract Template with RedPill</h1>
     <img height="320" src="./public/AI-Agent-Contract.jpg" />
     <br />
   </a>
@@ -31,7 +31,7 @@
   <img height="240" src="https://www.jlwranglerforums.com/forum/attachments/zoolander-gif.325299/">
 </div>
 
-The OpenAI AI Agent template is a **MINIMAL** template to build an AI Agent that can be hosted on Phala Network's decentralized hosting protocol. Unlike Vercel or other FaaS, it allows you to publish your AI Agent compiled code to IPFS and hosts it on a fully decentralized FaaS cloud with the following benefits:
+The RedPill AI Agent template is a **MINIMAL** template to build an AI Agent that can be hosted on Phala Network's decentralized hosting protocol. Unlike Vercel or other FaaS, it allows you to publish your AI Agent compiled code to IPFS and hosts it on a fully decentralized FaaS cloud with the following benefits:
 
 - 💨 Ship Fast: Build and ship with familiar toolchain in minutes
 - ⛑️ Secure: Execution guarded by rock solid TEE / Intel SGX
@@ -48,7 +48,7 @@ npm install
 ```
 
 ### Testing Locally
-Create `.env` file and add your OpenAI API Key
+Create `.env` file and add your RedPill API Key
 ```shell
 cp .env.local .env
 ```
