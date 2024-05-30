@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/Phala-Network/ai-agent-template-openai">
+  <a href="https://github.com/Phala-Network/ai-agent-template-redpill">
     <h1>AI Agent Contract Template with OpenAI</h1>
     <img height="320" src="./public/AI-Agent-Contract.jpg" />
     <br />
@@ -11,12 +11,12 @@
   <p align="center">
     Host your AI Agent Contract on Phala's decentralized serverless cloud.
     <br />
-    <a href="https://github.com/Phala-Network/ai-agent-template-openai"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Phala-Network/ai-agent-template-redpill"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="QmQu9AmBL13tyGpxgg5ASt96WQ669p63rnJRWiAo9st8ns/0?key=c0c0105ba56276cd&chatQuery=When%20did%20humans%20land%20on%20the%20moon">View Demo</a>
     ·
-    <a href="https://github.com/Phala-Network/ai-agent-template-openai/issues">Report Bug</a>
+    <a href="https://github.com/Phala-Network/ai-agent-template-redpill/issues">Report Bug</a>
     ·
     <a href="https://discord.gg/DXGGJajW">Discord</a>
   </p>
@@ -52,6 +52,10 @@ Create `.env` file and add your OpenAI API Key
 ```shell
 cp .env.local .env
 ```
+Get an OpenAI API Key from Redpill
+> Go to https://red-pill.ai/dashboard and claim your OpenAI API Key by swapping some ETH for wGPT at https://app.uniswap.org/explore/tokens/base/0x74F62Bc1961028C22b8080961c6534f4eDD49D6C
+>
+> Video: https://youtu.be/ZoJwbLNhbWE
 
 In `.env` file replace `YOUR_OPENAI_KEY` with your API Key
 ```text
