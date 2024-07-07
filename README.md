@@ -50,7 +50,7 @@ npm install
 ### Testing Locally
 Create `.env` file and add your RedPill API Key
 ```shell
-cp .env.local .env
+cp .env.example .env
 ```
 Get an OpenAI API Key from Redpill
 > Go to https://red-pill.ai/dashboard and claim your OpenAI API Key by swapping some ETH for wGPT at https://app.uniswap.org/explore/tokens/base/0x74F62Bc1961028C22b8080961c6534f4eDD49D6C
