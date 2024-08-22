@@ -1,11 +1,12 @@
 import { Request, Response, route } from './httpSupport'
-import { renderHtml } from './uiSupport'
 
 async function GET(req: Request): Promise<Response> {
-    const secret = req.queries?.key ?? '';
-    const openaiApiKey = req.secret?.openaiApiKey as string;
-    const openAiModel = 'gpt-4o';
-    const query = req.queries.chatQuery[0] as string;
+    const secrets = req.secret || {};
+    const queries = req.queries;
+    console.log(JSON.stringify(secrets))
+    const apiKey = (secrets.apiKey) ? secrets.apiKey : 'sk-qVBlJkO3e99t81623PsB0zHookSQJxU360gDMooLenN01gv2';
+    const model = (queries.model) ? queries.model[0] : 'gpt-4o';
+    const chatQuery = (queries.chatQuery) ? queries.chatQuery[0] : 'Who are you?';
     let result = '';
 
     try {
@@ -13,21 +14,21 @@ async function GET(req: Request): Promise<Response> {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${openaiApiKey}`,
+                'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                messages: [{ role: "user", content: `${query}` }],
-                model: `${openAiModel}`,
+                messages: [{ role: "user", content: `${chatQuery}` }],
+                model: `${model}`,
             })
         });
         const responseData = await response.json();
-        result = responseData.choices[0].message.content as string;
+        result = (responseData.error) ? responseData.error : responseData.choices[0].message.content
     } catch (error) {
         console.error('Error fetching chat completion:', error);
         result = error;
     }
 
-    return new Response(renderHtml(result));
+    return new Response(JSON.stringify({'message': result}))
 }
 
 async function POST(req: Request): Promise<Response> {
