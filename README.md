@@ -11,11 +11,11 @@
     <a href="https://github.com/Phala-Network/ai-agent-template-redpill"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="QmQu9AmBL13tyGpxgg5ASt96WQ669p63rnJRWiAo9st8ns/0?key=c0c0105ba56276cd&chatQuery=When%20did%20humans%20land%20on%20the%20moon">View Demo</a>
+    <a href="https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3?key=51f265212c26086c&chatQuery=When%20did%20humans%20land%20on%20the%20moon">View Demo</a>
     ·
     <a href="https://github.com/Phala-Network/ai-agent-template-redpill/issues">Report Bug</a>
     ·
-    <a href="https://discord.gg/DXGGJajW">Discord</a>
+    <a href="https://discord.gg/phala-network">Discord</a>
   </p>
 
   <h3>Architecure Overview</h3>
@@ -50,13 +50,16 @@ Create `.env` file and add your RedPill API Key
 cp .env.example .env
 ```
 Get an API Key from Redpill
-> Go to https://red-pill.ai/dashboard and claim your API Key by swapping some ETH for wGPT at https://app.uniswap.org/explore/tokens/base/0x74F62Bc1961028C22b8080961c6534f4eDD49D6C
->
-> Video: https://youtu.be/ZoJwbLNhbWE
+> **Note**
+> 
+> There is a default RedPill API Key provided in the .env.example file. This API key is rate limited and if you run into an error that displays `Insufficient funds`, reach out to the Phala Team on [discord](https://discord.gg/phala-network).
+
+- Go to https://red-pill.ai/dashboard and claim your API Key by swapping some ETH for wGPT at https://app.uniswap.org/explore/tokens/base/0x74F62Bc1961028C22b8080961c6534f4eDD49D6C
+- Video Tutorial: https://youtu.be/ZoJwbLNhbWE
 
 In `.env` file replace `YOUR_API_KEY` with your API Key
 ```text
-REDPILL_API_KEY="YOUR_RAPI_KEY"
+REDPILL_API_KEY="YOUR_API_KEY"
 ```
 
 Build your Agent
@@ -81,7 +84,8 @@ GET RESULT: {
     'Access-Control-Allow-Origin': '*'
   }
 }
-**NOTE**: This is a local test and your published code could have a different result when executing in the TEE on Phala Network.
+**NOTE**: 
+This is a local test and your published code could have a different result when executing in the TEE on Phala Network.
 
 Please reach out to the team here if your run into issues: https://discord.gg/phala-network
 ```
@@ -202,7 +206,7 @@ The example at https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmc
 <ul>
   <li>Your AI Agent code on is fully secure, private, and permissionless. Nobody can manipulate your program, steal any data from it, or censor it.</li>
   <li>Security: The code is executed in the decentralized TEE network running on Phala Network. It runs code inside a secure blackbox (called enclave) created by the CPU. It generates cryptographic proofs verifiable on Phala blockchain. It proves that the hosted code is exactly the one you deployed.</li>
-  <li>Privacy: You can safely put secrets like API keys or user privacy on Phala Network. The code runs inside TEE hardware blackboxs. The memory of the program is fully encrypted by the TEE. It blocks any unauthorized access to your data.</li>
+  <li>Privacy: You can safely put secrets like API keys or user privacy on Phala Network. The code runs inside TEE hardware blackbox. The memory of the program is fully encrypted by the TEE. It blocks any unauthorized access to your data.</li>
   <li>Learn more at <a href="https://phala.network">Phala Network Homepage</a></li>
 </details>
 

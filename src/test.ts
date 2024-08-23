@@ -20,7 +20,7 @@ async function test() {
     })
     console.log('GET RESULT:', JSON.parse(getResult))
 
-    console.log('**NOTE**: This is a local test and your published code could have a different result when executing in the TEE on Phala Network.')
+    console.log(`**NOTE**:\nThis is a local test and your published code could have a different result when executing in the TEE on Phala Network.`)
     console.log(`\nPlease reach out to the team here if your run into issues: https://discord.gg/phala-network`)
 
 }
