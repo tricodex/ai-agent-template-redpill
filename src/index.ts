@@ -3,7 +3,6 @@ import { Request, Response, route } from './httpSupport'
 async function GET(req: Request): Promise<Response> {
     const secrets = req.secret || {};
     const queries = req.queries;
-    console.log(JSON.stringify(secrets))
     const apiKey = (secrets.apiKey) ? secrets.apiKey : 'sk-qVBlJkO3e99t81623PsB0zHookSQJxU360gDMooLenN01gv2';
     const model = (queries.model) ? queries.model[0] : 'gpt-4o';
     const chatQuery = (queries.chatQuery) ? queries.chatQuery[0] : 'Who are you?';

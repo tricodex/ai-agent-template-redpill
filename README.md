@@ -153,7 +153,8 @@ curl https://wapo-testnet.phala.network/ipfs/<your-cid>
 
 By default, all the compiled JS code is visible for anyone to view if they look at IPFS CID. This makes private info like API keys, signer keys, etc. vulnerable to be stolen. To protect devs from leaking keys, we have added a field called `secret` in the `Request` object. It allows you to store secrets in a vault for your AI Agent to access.
 
-To add your secrets, edit the [setSecrets.ts](./scripts/setSecrets.ts) file and update the `secrets` variable at the top of the file.
+To add your secrets, 
+1) edit the [setSecrets.ts](./scripts/setSecrets.ts) file and update the `secrets` variable at the top of the file
 ```typescript
 // Update your key value JSON object here for your secrets
 const secrets = JSON.stringify({
@@ -161,6 +162,37 @@ const secrets = JSON.stringify({
   // key: value
   apiKey: process.env.REDPILL_API_KEY
 })
+```
+2) Update the [.env](./.env.example) file with your published agent IPFS CID
+```text
+AGENT_CID=Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3
+```
+3) Run command to set the secrets
+```shell
+npm run set-secrets
+```
+Expected output:
+```shell
+Storing secrets...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   157    0    68  100    89    100    130 --:--:-- --:--:-- --:--:--   230
+{"token":"363b6860c818fc03","key":"51f265212c26086c","succeed":true}
+
+Secrets set successfully. Go to the URL below to interact with your agent:
+https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3?key=51f265212c26086c
+```
+
+The API returns a `token` and a `key`. The `key` is the id of your secret. It can be used to specify which secret you are going to pass to your frame. The `token` can be used by the developer to access the raw secret. You should never leak the `token`.
+
+To verify the secret, run the following command where `key` and `token` are replaced with the values from adding your `secret` to the vault.
+```shell
+curl https://agents.phala.network/vaults/<key>/<token>
+```
+
+Expected output:
+```shell
+{"data":{"apiKey":"<REDPILL_API_KEY>"},"succeed":true}
 ```
 
 ### Access Queries
@@ -178,8 +210,7 @@ The example at https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmc
   <li>Most of the npm packages are supported: viem, onchainkit, ….</li>
   <li>Some packages with some advanced features are not supported:</li>
   <ul>
-    <li>Large code size. Compiled bundle should be less than 500kb.</li>
-    <li>Large memory usage, like image generation</li>
+    <li>Memory usage over 100MB</li>
     <li>Web Assembly</li>
     <li>Browser only features: local storage, service workers, etc</li>
   </ul>
@@ -191,13 +222,7 @@ The example at https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmc
 <ul>
   <li>The code runs inside a tailored <a href="https://bellard.org/quickjs/">QuickJS engine</a></li>
   <li>Available features: ES2023, async, fetch, setTimeout, setInterval, bigint</li>
-  <li>Resource limits</li>
-  <ul>
-    <li>Max execution time ~60s</li>
-    <li>Max memory usage: 16 mb</li>
-    <li>Max code size: 500 kb</li>
-    <li>Limited CPU burst: CPU time between async calls is limited. e.g. Too complex for-loop may hit the burst limit.</li>
-  </ul>
+  <li> <a href="https://docs.phala.network/tech-specs/ai-agent-contract#wapojs/">Tech spec doc</a></li>
 </ul>
 </details>
 
@@ -206,7 +231,7 @@ The example at https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmc
 <ul>
   <li>Your AI Agent code on is fully secure, private, and permissionless. Nobody can manipulate your program, steal any data from it, or censor it.</li>
   <li>Security: The code is executed in the decentralized TEE network running on Phala Network. It runs code inside a secure blackbox (called enclave) created by the CPU. It generates cryptographic proofs verifiable on Phala blockchain. It proves that the hosted code is exactly the one you deployed.</li>
-  <li>Privacy: You can safely put secrets like API keys or user privacy on Phala Network. The code runs inside TEE hardware blackbox. The memory of the program is fully encrypted by the TEE. It blocks any unauthorized access to your data.</li>
+  <li>Privacy: You can safely put secrets like API keys or user privacy on Phala Network. The code runs inside TEE hardware blackboxs. The memory of the program is fully encrypted by the TEE. It blocks any unauthorized access to your data.</li>
   <li>Learn more at <a href="https://phala.network">Phala Network Homepage</a></li>
 </details>
 
