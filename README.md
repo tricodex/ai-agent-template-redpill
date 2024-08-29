@@ -84,10 +84,10 @@ GET RESULT: {
     'Access-Control-Allow-Origin': '*'
   }
 }
-**NOTE**: 
-This is a local test and your published code could have a different result when executing in the TEE on Phala Network.
-
-Please reach out to the team here if your run into issues: https://discord.gg/phala-network
+Now you are ready to publish your agent, add secrets, and interact with your agent in the following steps:
+- Execute: 'npm run publish-agent'
+- Set secrets: 'npm run set-secrets'
+- Go to the url produced by setting the secrets (e.g. https://wapo-testnet.phala.network/ipfs/QmPQJD5zv3cYDRM25uGAVjLvXGNyQf9Vonz7rqkQB52Jae?key=b092532592cbd0cf)
 ```
 
 ### Publish Your AI Agent
@@ -118,26 +118,45 @@ This may require you to log into thirdweb and will take some time to publish to 
 - Uploading file to IPFS. This may take a while depending on file sizes.
 
 ✔ Successfully uploaded file to IPFS.
-✔ Files stored at the following IPFS URI: ipfs://Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3
-✔ Open this link to view your upload: https://4b2dfbdff6a0afaca0e7767524856faf.ipfscdn.io/ipfs/bafybeigmsnqnox3ua7j3e3gk6jzxpetvxq7mszvxo6ndijiv26ndwrptuy/
+✔ Files stored at the following IPFS URI: ipfs://QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc
+✔ Open this link to view your upload: https://b805a9b72767504353244e0422c2b5f9.ipfscdn.io/ipfs/bafybeifukvkuyztltpq2gi55nswzvwkpgrwrogwykm4ymoqeymh2pxoukm/
 
-Agent Contract deployed at: https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3
+Agent Contract deployed at: https://wapo-testnet.phala.network/ipfs/QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc
 
 If your agent requires secrets, ensure to do the following:
-1) Edit the setSecrets.ts file to add your secrets
-2) Set the variable AGENT_CID=Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3 in the .env file
-3) Run command: npm run set-secrets
+1) Edit the ./secrets/default.json file or create a new JSON file in the ./secrets folder and add your secrets to it.
+2) Run command: 'npm run set-secrets' or 'npm run set-secrets [path-to-json-file]'
+Logs folder created.
+Deployment information updated in ./logs/latestDeployment.json
 ```
 
-<details>
-<summary>New to thirdweb?</summary>
-We use <a href="https://thirdweb.com/dashboard/infrastructure/storage">thirdweb Storage</a> to host IPFS contents. If you are new to thirdweb, the command will guide you to create your account or login to your existing account from the browser. (You may need to forward port 8976 if you are accessing a remote console via SSH.)
-</details>
+
+> :information_source: Note that your latest deployment information will be logged to in file [`./logs/latestDeployment.json`](./logs/latestDeployment.json). This file is updated every time you publish a new Agent Contract to IPFS. This file is also used to get the IPFS CID of your Agent Contract when setting secrets for your Agent Contract.
+>
+> Here is an example:
+> ```json
+> {
+>   "date": "2024-08-29T18:47:55.108Z",
+>   "cid": "QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc",
+>   "url": "https://wapo-testnet.phala.network/ipfs/QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc"
+> }
+> ```
 
 <details>
-<summary>Did thirdweb fail to publish?</summary>
-If ThirdWeb fails to publish, please use any IPFS pinning service to publish your Agent Contract.
+<summary>New to Thirdweb?</summary>
+We use <a href="https://thirdweb.com/dashboard/infrastructure/storage">thirdweb Storage</a> to host IPFS contents. If you are new to thirdweb, the command will guide you to create your account or login to your existing account from the browser.
 </details>
+
+> **Did Thirdweb fail to publish?**
+>
+> If ThirdWeb fails to publish, please signup for your own ThirdWeb account to publish your Agent Contract to IPFS. Signup or login at https://thirdweb.com/dashboard/
+>
+> Whenever you log into ThirdWeb, create a new API key and replace the default API Key with yours in the [.env](./.env) file.
+>
+> ```
+> THIRDWEB_API_KEY="YOUR_THIRDWEB_API_KEY"
+> ```
+
 
 ### Access the Published AI Agent
 
@@ -153,35 +172,39 @@ curl https://wapo-testnet.phala.network/ipfs/<your-cid>
 
 By default, all the compiled JS code is visible for anyone to view if they look at IPFS CID. This makes private info like API keys, signer keys, etc. vulnerable to be stolen. To protect devs from leaking keys, we have added a field called `secret` in the `Request` object. It allows you to store secrets in a vault for your AI Agent to access.
 
-To add your secrets, 
-1) edit the [setSecrets.ts](./scripts/setSecrets.ts) file and update the `secrets` variable at the top of the file
-```typescript
-// Update your key value JSON object here for your secrets
-const secrets = JSON.stringify({
-  // Add your secrets here
-  // key: value
-  apiKey: process.env.REDPILL_API_KEY
-})
+To add your secrets,
+1) Edit the [default.json](./secrets/default.json) file or create a new JSON file in the `./secrets` folder and add your secrets to it.
+```json
+{
+  "apiKey": "YOUR_REDPILL_API_KEY"
+}
 ```
-2) Update the [.env](./.env.example) file with your published agent IPFS CID
-```text
-AGENT_CID=Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3
-```
-3) Run command to set the secrets
+2) Run command to set the secrets
 ```shell
 npm run set-secrets
+# or if you have a custom JSON file
+npm run set-secrets <path-to-json-file>
 ```
 Expected output:
 ```shell
+Use default secrets...
 Storing secrets...
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   157    0    68  100    89    100    130 --:--:-- --:--:-- --:--:--   230
-{"token":"363b6860c818fc03","key":"51f265212c26086c","succeed":true}
+100   199    0    68  100   131    121    234 --:--:-- --:--:-- --:--:--   356
+{"token":"5d9faaed6be5414a","key":"a3a8a4ef2c057d5c","succeed":true}
 
 Secrets set successfully. Go to the URL below to interact with your agent:
-https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3?key=51f265212c26086c
+https://wapo-testnet.phala.network/ipfs/QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc?key=a3a8a4ef2c057d5c
+Log entry added to secrets.log
 ```
+
+> :information_source: Note that all your secrets will be logged in file [`./logs/secrets.log`](./logs/secrets.log). This file is updated every time you add new secrets to your Agent Contract. If you have not published an Agent Contract, yet, this command will fail since there is not a CID to map the secrets to.
+>
+> Here is an example:
+> ```text
+> 2024-08-29T18:54:16.643Z, CID: [QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc], Token: [5d9faaed6be5414a], Key: [a3a8a4ef2c057d5c], URL: [https://wapo-testnet.phala.network/ipfs/QmaUbZgNz9dZ5eGm87DDqegRtcBV7RdosxizYQcfe2bHRc?key=a3a8a4ef2c057d5c]
+> ```
 
 The API returns a `token` and a `key`. The `key` is the id of your secret. It can be used to specify which secret you are going to pass to your frame. The `token` can be used by the developer to access the raw secret. You should never leak the `token`.
 
