@@ -11,7 +11,7 @@ async function test() {
             // Choose from any model listed here https://docs.red-pill.ai/get-started/supported-models
             model: ["gpt-4o"]
         },
-        secret: { apiKey: process.env.REDPILL_API_KEY },
+        secret: { apiKey: 'sk-qVBlJkO3e99t81623PsB0zHookSQJxU360gDMooLenN01gv2' },
         headers: {},
     })
     console.log('GET RESULT:', JSON.parse(getResult))
