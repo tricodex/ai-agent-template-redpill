@@ -45,7 +45,7 @@ npm install
 ```
 
 ### Testing Locally
-Create `.env` file and add your RedPill API Key
+Create `.env` file with the default ThirdWeb API key for publishing your Agent Contract to IPFS
 ```shell
 cp .env.example .env
 ```
@@ -57,9 +57,11 @@ Get an API Key from Redpill
 - Go to https://red-pill.ai/dashboard and claim your API Key by swapping some ETH for wGPT at https://app.uniswap.org/explore/tokens/base/0x74F62Bc1961028C22b8080961c6534f4eDD49D6C
 - Video Tutorial: https://youtu.be/ZoJwbLNhbWE
 
-In `.env` file replace `YOUR_API_KEY` with your API Key
+In [default.json](./secrets/default.json) file replace `YOUR_API_KEY` with your API Key. The default has a rate limit. If you want access to a RedPill code, reach out to the Phala Team.
 ```text
-REDPILL_API_KEY="YOUR_API_KEY"
+{
+  "apiKey": "YOUR_REDPILL_API_KEY"
+}
 ```
 
 Build your Agent
