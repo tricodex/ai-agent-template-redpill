@@ -28,16 +28,19 @@
     "@types/node": "^22.1.0",
     "@vitest/coverage-v8": "^2.0.5",
     "concurrently": "^9.0.1",
+    "dotenv": "^16.4.5",
     "npm-watch": "^0.13.0",
+    "thirdweb": "^5.32.3",
     "tsup": "^8.2.4",
+    "tsx": "^4.7.1",
     "typescript": "^5.5.4",
     "vitest": "^2.0.5"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",
     "@phala/wapo-env": "^0.9.4",
-    "hono": "4.5.6",
     "superjson": "^2.2.1",
+    "hono": "4.5.6",
     "viem": "^2.19.9"
   }
 }
