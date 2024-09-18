@@ -76,20 +76,20 @@ npm run test
 
 Expected Test Results
 ```shell
-INPUT: {"method":"GET","path":"/ipfs/CID","queries":{"chatQuery":["Who are you?"],"model":["gpt-4o"]},"secret":{"apiKey":"sk-D3rWzPAe16RIB8r8GptK9vi6ozuYEnHY4Lpg2L2lap465ROo"},"headers":{}}
-{"apiKey":"sk-D3rWzPAe16RIB8r8GptK9vi6ozuYEnHY4Lpg2L2lap465ROo"}
-GET RESULT: {
-  status: 200,
-  body: `{"message":"I'm an AI language model created by OpenAI, here to help answer your questions and provide information on a wide range of topics. How can I assist you today?"}`,
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
-  }
-}
 Now you are ready to publish your agent, add secrets, and interact with your agent in the following steps:
 - Execute: 'npm run publish-agent'
 - Set secrets: 'npm run set-secrets'
 - Go to the url produced by setting the secrets (e.g. https://wapo-testnet.phala.network/ipfs/QmPQJD5zv3cYDRM25uGAVjLvXGNyQf9Vonz7rqkQB52Jae?key=b092532592cbd0cf)
+
+ ✓ tests/index.test.ts (2) 6157ms
+   ✓ Test RedPill AI Agent Contract (2) 6156ms
+     ✓ GET Test: Pass chatQuery through URL Query 2722ms
+     ✓ POST Test: Pass chatQuery and model through body of POST request 3434ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  16:30:03
+   Duration  6.36s (transform 23ms, setup 6ms, collect 31ms, tests 6.16s, environment 0ms, prepare 39ms)
 ```
 
 ### Publish Your AI Agent
@@ -101,22 +101,6 @@ npm run publish-agent
 
 Upon a successful upload, the command should show the URL to access your AI Agent.
 ```shell
-✓ Compiled successfully.
-  1.51 KB  dist/index.js
-Running command: npx thirdweb upload dist/index.js
-This may require you to log into thirdweb and will take some time to publish to IPFS...
-
-    $$\     $$\       $$\                 $$\                         $$\       
-    $$ |    $$ |      \__|                $$ |                        $$ |      
-  $$$$$$\   $$$$$$$\  $$\  $$$$$$\   $$$$$$$ |$$\  $$\  $$\  $$$$$$\  $$$$$$$\  
-  \_$$  _|  $$  __$$\ $$ |$$  __$$\ $$  __$$ |$$ | $$ | $$ |$$  __$$\ $$  __$$\ 
-    $$ |    $$ |  $$ |$$ |$$ |  \__|$$ /  $$ |$$ | $$ | $$ |$$$$$$$$ |$$ |  $$ |
-    $$ |$$\ $$ |  $$ |$$ |$$ |      $$ |  $$ |$$ | $$ | $$ |$$   ____|$$ |  $$ |
-    \$$$$  |$$ |  $$ |$$ |$$ |      \$$$$$$$ |\$$$$$\$$$$  |\$$$$$$$\ $$$$$$$  |
-     \____/ \__|  \__|\__|\__|       \_______| \_____\____/  \_______|\_______/ 
-
- 💎 thirdweb v0.14.12 💎
-
 - Uploading file to IPFS. This may take a while depending on file sizes.
 
 ✔ Successfully uploaded file to IPFS.
@@ -220,12 +204,33 @@ Expected output:
 {"data":{"apiKey":"<REDPILL_API_KEY>"},"succeed":true}
 ```
 
-### Access Queries
-To help create custom logic, we have an array variable named `queries` that can be accessed in the `Request` class. To access the `queries` array variable `chatQuery` value at index `0`, the syntax will look as follows:
+#### Accessing Secrets in Your Code
+To access your secrets you will have to get them from secret `vault` via `process.env.secret`. Here is an example of accessing the secret key value of `apiKey`.
 ```typescript
-const query = req.queries.chatQuery[0] as string;
+let vault: Record<string, string> = {}
+try {
+  vault = JSON.parse(process.env.secret || '')
+} catch (e) {
+  console.error(e)
+  return c.json({ error: "Failed to parse secrets" })
+}
+const apiKey = (vault.apiKey) ? vault.apiKey as string : 'SALTY_BAE'
 ```
-The example at https://wapo-testnet.phala.network/ipfs/Qmc7EDq1X8rfYGGfHyXZ6xsmcSUWQcqsDoeRMfmvFujih3?key=51f265212c26086c&chatQuery=When%20did%20humans%20land%20on%20the%20moon will have a value of `When did humans land on the moon`. `queries` can have any field name, so `chatQuery` is just an example of a field name and not a mandatory name, but remember to update your `index.ts` file logic to use your expected field name.
+
+### Handling Requests
+Check the [`Hono` docs](https://hono.dev/docs) for information on accessing URL `queries` or `body` from a `post` request.
+
+> **NOTICE**
+>
+> The current implementation of `hono` is limited. For example, routing paths are not supported, yet. Try to only use the `/` path & utilize [URL queries](https://hono.dev/docs/api/request#query) or pass data via the [body](https://hono.dev/docs/api/request#json) in a post request
+
+```typescript
+// Access query value for a URL query named `type`
+let queries = c.req.queries() || {}
+const getType = (queries.type) ? queries.type[0] as string : ''
+// Access body from post request
+const data = await c.req.json()
+```
 
 ### Debugging
 
@@ -258,6 +263,36 @@ console.log('info log message!')
 console.error('error log message!')
 ```
 For more information check the [MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/console) on `console` object.
+
+### Getting Rugged By The WiFi?!
+Run a local testnet with [`docker` support](https://docs.docker.com/desktop/). All you need to do to get a local testnet started is run:
+> **WARNING**
+>
+> Running the local testnet may return an error if port `8000` is already in use.
+
+```shell
+npm run dev
+```
+
+#### Make a Request to Your Local Build
+```shell
+# GET request
+curl http://127.0.0.1:8000/local
+# GET request with URL queries
+curl http://127.0.0.1:8000/local?query1=one&query2=two
+# POST request
+curl http://127.0.0.1:8000/local -X POST -H 'content-type: application/json' -d '{"foo": "bar"}'
+```
+
+#### Add Secrets to Your Local Build
+```shell
+curl http://127.0.0.1:8000/vaults -H 'Content-Type: application/json' -d '{"cid": "local", "data": {"secretKey":"secretValue"}}'
+```
+
+#### Check The Logs of Your Local Build
+```shell
+curl 'http://127.0.0.1:8000/logs/all/local'
+```
 
 ## FAQ
 
