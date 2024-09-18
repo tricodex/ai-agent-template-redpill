@@ -1,15 +1,17 @@
 {
-  "name": "phat-gpt-template",
+  "name": "ai-agent-redpill-template",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsup --config tsup.config.ts",
-    "start": "docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver",
+    "start": "docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver:latest",
     "watch": "npm-watch",
     "dev": "concurrently \"npm:watch\" \"npm:start\"",
     "test": "vitest --testTimeout=60000",
-    "ci": "npm run build && vitest --coverage --run"
+    "ci": "npm run build && vitest --coverage --run",
+    "publish-agent": "npm run build && tsx scripts/publish.ts",
+    "set-secrets": "tsx scripts/setSecrets.ts"
   },
   "watch": {
     "build": {
@@ -34,7 +36,7 @@
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",
     "@phala/wapo-env": "^0.9.4",
-    "hono": "^4.5.4",
+    "hono": "4.5.6",
     "superjson": "^2.2.1",
     "viem": "^2.19.9"
   }
