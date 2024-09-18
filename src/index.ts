@@ -1,5 +1,6 @@
 import '@phala/wapo-env'
 import { Hono } from 'hono/tiny'
+import { html, raw } from 'hono/html'
 import { handle } from '@phala/wapo-env/guest'
 
 export const app = new Hono()
@@ -46,24 +47,6 @@ app.get('/', async (c) => {
     message: ''
   };
 
-  // try {
-  //   const response = await fetch('https://api.red-pill.ai/v1/chat/completions', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${apiKey}`,
-  //     },
-  //     body: JSON.stringify({
-  //       messages: [{ role: "user", content: `${chatQuery}` }],
-  //       model: `${model}`,
-  //     })
-  //   });
-  //   const responseData = await response.json()
-  //   result.message = (responseData.error) ? responseData.error : responseData.choices[0].message.content
-  // } catch (error) {
-  //   console.error('Error fetching chat completion:', error);
-  //   result.message = error as string;
-  // }
   result.message = await getChatCompletion(apiKey, model, chatQuery)
 
   return c.json(result)
