@@ -8,7 +8,7 @@ vi.stubEnv('secret', apiKey)
 describe('Test RedPill AI Agent Contract', () => {
   test('GET Test: Pass chatQuery through URL Query', async () => {
     let chatQuery = 'Who are you?'
-    let model = 'gpt-4o'
+    let model = 'o1-preview'
     const resp = await app.request(encodeURI(`/?chatQuery=${chatQuery}&model=${model}`))
     expect(resp.status).toBe(200)
     expect(resp.headers.get('content-type')?.toLowerCase()).toBe('application/json; charset=utf-8')
