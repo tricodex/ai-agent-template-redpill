@@ -1,12 +1,17 @@
 import '@phala/wapo-env'
 import { Hono } from 'hono/tiny'
-import { html, raw } from 'hono/html'
 import { handle } from '@phala/wapo-env/guest'
 
 export const app = new Hono()
 
-async function getChatCompletion(apiKey: string, model: string, chatQuery: string) {
-  let result = ''
+const systemPrompt = `You are a service validity assessor for a decentralized AI Fiverr-like platform. Your task is to evaluate digital services based on provided requirements. Here are the general requirements:
+1. The content must be original and not plagiarized.
+2. The content must be free of grammatical and spelling errors.
+3. The content must be coherent and well-structured.
+4. The content must be relevant to the specified topic or service.
+Assess the provided content against both these general requirements and the specific requirements provided by the service requirer. If all requirements are met, return a positive assessment. If not, explain why the content fails to meet the requirements.`
+
+async function getAIVerification(apiKey: string, model: string, requirements: string, content: string) {
   try {
     const response = await fetch('https://api.red-pill.ai/v1/chat/completions', {
       method: 'POST',
@@ -15,65 +20,44 @@ async function getChatCompletion(apiKey: string, model: string, chatQuery: strin
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        messages: [{ role: "user", content: `${chatQuery}` }],
-        model: `${model}`,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Specific requirements: ${requirements}\n\nContent to assess: ${content}` }
+        ],
+        model: model,
       })
     });
     const responseData = await response.json();
-    result = (responseData.error) ? responseData.error : responseData.choices[0].message.content
+    return responseData.choices[0].message.content;
   } catch (error) {
-    console.error('Error fetching chat completion:', error)
-    result = error as string
+    console.error('Error fetching AI verification:', error)
+    return `Error: ${error}`
   }
-  return result
 }
 
-app.get('/', async (c) => {
+app.post('/verify-service', async (c) => {
   let vault: Record<string, string> = {}
-  let queries = c.req.queries() || {}
   try {
     vault = JSON.parse(process.env.secret || '')
   } catch (e) {
     console.error(e)
-    return c.json({ error: "Failed to parse secrets" })
+    return c.json({ error: "Failed to parse secrets" }, 500)
   }
-  const apiKey = (vault.apiKey) ? vault.apiKey : 'sk-qVBlJkO3e99t81623PsB0zHookSQJxU360gDMooLenN01gv2'
-  // Choose from any model listed here https://docs.red-pill.ai/get-started/supported-models
-  const model = (queries.model) ? queries.model[0] : 'gpt-4o'
-  const chatQuery = (queries.chatQuery) ? queries.chatQuery[0] : 'Who are you?'
-  let result = {
-    model,
-    chatQuery: chatQuery,
-    message: ''
-  };
 
-  result.message = await getChatCompletion(apiKey, model, chatQuery)
+  const apiKey = vault.redpillApiKey
+  if (!apiKey) {
+    return c.json({ error: "RedPill API key not found in secrets" }, 500)
+  }
 
-  return c.json(result)
-})
-
-app.post('/', async (c) => {
-  let vault: Record<string, string> = {}
   const data = await c.req.json()
-  console.log('user payload in JSON:', data)
-  try {
-    vault = JSON.parse(process.env.secret || '')
-  } catch (e) {
-    console.error(e)
-    return c.json({ error: "Failed to parse secrets" })
-  }
-  const apiKey = (vault.apiKey) ? vault.apiKey : 'sk-qVBlJkO3e99t81623PsB0zHookSQJxU360gDMooLenN01gv2'
-  const model = (data.model) ? data.model : 'gpt-4o'
-  const chatQuery = (data.chatQuery) ? data.chatQuery : 'Who are you?'
-  let result = {
-    model,
-    chatQuery: chatQuery,
-    message: ''
-  };
+  const { requirements, content, model = 'gpt-4o' } = data
 
-  result.message = await getChatCompletion(apiKey, model, chatQuery)
+  const verificationResult = await getAIVerification(apiKey, model, requirements, content)
 
-  return c.json(result)
-});
+  return c.json({
+    success: true,
+    verificationResult
+  })
+})
 
 export default handle(app)
